@@ -5,7 +5,7 @@ Not affiliated with the VulkanMod project.
 
 It contains the code of VulkanMod adapted to the new game version, plus fixes for bugs found while porting. There are
 **no additional features or optimizations**. For a version with extra optimizations see
-[VulkanMod+](https://github.com/DriedApricots/VulkanModPlus).
+[VulkanMod Turbo](https://github.com/DriedApricots/VulkanMod-Turbo).
 
 ## Why a port, when Minecraft 26.2 already has Vulkan?
 
@@ -32,7 +32,7 @@ whatever is selected there. You don't need to change it.
 
 - Minecraft 26.2, Fabric Loader 0.17+
 - A GPU with Vulkan 1.2 support
-- Not compatible with Sodium, Iris or VulkanMod+
+- Not compatible with Sodium, Iris or VulkanMod Turbo
 
 ## Building
 
