@@ -7,6 +7,15 @@ It contains the code of VulkanMod adapted to the new game version, plus fixes fo
 **no additional features or optimizations**. For a version with extra optimizations see
 [VulkanMod+](https://github.com/DriedApricots/VulkanModPlus).
 
+## Why a port, when Minecraft 26.2 already has Vulkan?
+
+Since 26.2 Minecraft can run on Vulkan by itself, but its Vulkan backend is a translation layer: Mojang keeps one
+rendering code for OpenGL and Vulkan, so the world is drawn the same way as on OpenGL. VulkanMod has its **own renderer
+built for Vulkan**: its own chunk renderer that draws many chunk sections with one indirect draw call, culls chunk faces
+that point away from the camera and builds chunks on several threads. This port brings that renderer to 26.2.
+
+The vanilla **"Graphics API"** option is bypassed: with this mod the game always starts on VulkanMod's renderer,
+whatever is selected there. You don't need to change it.
 ## Fixes made while porting
 
 - Crash when minimizing the window or toggling fullscreen (invalid swapchain image index, device lost)
