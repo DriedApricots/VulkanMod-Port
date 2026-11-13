@@ -1,0 +1,68 @@
+// Unofficial port of VulkanMod 0.6.8 by xCollateral (LGPL-3.0) to Minecraft 26.2, without additional changes.
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+base { archivesName = project.archives_base_name }
+
+loom {
+	accessWidenerPath = file("src/main/resources/vulkanmod.accesswidener")
+	// local test harness: gradlew runClient -PvkWorld=vktest joins run/saves/vktest directly
+	if (project.hasProperty('vkWorld')) {
+		runs { client { programArgs '--quickPlaySingleplayer', project.property('vkWorld') } }
+	}
+	// test harness only: -PvkJvm="-XX:StartFlightRecording=..." (space-separated JVM args)
+	if (project.hasProperty('vkJvm')) {
+		runs { client { vmArgs(*project.property('vkJvm').toString().split(' ')) } }
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+
+def lwjglVersion = "3.4.1"
+def natives = ["natives-windows", "natives-linux", "natives-macos", "natives-macos-arm64"]
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	["fabric-api-base", "fabric-resource-loader-v0", "fabric-resource-loader-v1", "fabric-rendering-v1", "fabric-renderer-api-v1",
+	 "fabric-rendering-fluids-v1", "fabric-block-getter-api-v2", "fabric-lifecycle-events-v1", "fabric-transitive-access-wideners-v1"].each {
+		include(fabricApi.module(it, project.fabric_api_version))
+	}
+
+	// Quilt 0.30.1 bundles MixinExtras 0.5.4, which crashes on Mixin-0.17 @Redirect annotations; ship 0.5.5 (newest wins)
+	include("io.github.llamalad7:mixinextras-fabric:0.5.5")
+
+	include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
+	["org.lwjgl:lwjgl-vma", "org.lwjgl:lwjgl-shaderc"].each { m ->
+		include(implementation("$m:$lwjglVersion"))
+		natives.each { n -> include(runtimeOnly("$m:$lwjglVersion:$n")) }
+	}
+	["natives-macos", "natives-macos-arm64"].each { n -> include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$n")) }
+}
+
+processResources {
+	def v = project.version
+	inputs.property "version", v
+	filesMatching("fabric.mod.json") { expand "version": v }
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+	it.options.encoding = "UTF-8"
+	it.options.compilerArgs += ['-Xmaxerrs', '5000', '-nowarn']
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+// LICENSE_VulkanMod is already in src/main/resources

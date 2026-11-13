@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "vulkanmod",
+  "version": "${version}",
+  "name": "VulkanMod (unofficial 26.2 port)",
+  "description": "Unofficial port of VulkanMod 0.6.8 by Collateral to Minecraft 26.2. Same features as the original, only adapted to the new game version (plus fixes for bugs found while porting). Not affiliated with the VulkanMod project.",
+  "authors": ["Collateral"],
+  "contributors": ["DriedApricots (26.2 port)"],
+  "contact": {
+    "homepage": "https://github.com/xCollateral/VulkanMod",
+    "sources": "https://github.com/DriedApricots/VulkanMod-Port",
+    "issues": "https://github.com/DriedApricots/VulkanMod-Port/issues"
+  },
+  "license": "LGPL-3.0-only",
+  "icon": "assets/vulkanmod/vlogo.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["net.vulkanmod.Initializer"]
+  },
+  "mixins": ["vulkanmod.mixins.json"],
+  "accessWidener": "vulkanmod.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.17.0",
+    "minecraft": "~26.2"
+  },
+  "breaks": {
+    "sodium": "*",
+    "iris": "*",
+    "vulkanmodplus": "*"
+  },
+  "custom": {
+    "fabric-renderer-api-v1:contains_renderer": true
+  }
+}
